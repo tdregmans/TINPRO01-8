@@ -15,7 +15,6 @@ import Text.Read
 decompress :: [Char] -> [Char]
 decompress x
   | null x = []
-  | length x == 1 = x
   | otherwise = replicate n (x !! index) ++ decompress (drop (index+1) x)
     where index = length (takeWhile isDigit x)
           strNum = take index x
