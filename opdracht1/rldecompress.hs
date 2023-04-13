@@ -1,9 +1,6 @@
 {--
-    opdracht2.hs
+    rldecompress.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
     Last edited: 2023-04-13
 --}
-
-
-module Main where
