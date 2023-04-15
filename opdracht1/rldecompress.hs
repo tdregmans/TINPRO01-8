@@ -15,10 +15,10 @@ import Text.Read
 decompress :: [Char] -> [Char]
 decompress x
   | null x = []
-  | otherwise = replicate n (x !! index) ++ decompress (drop (index+1) x)
+  | index == 0 = take 1 x ++ rest
+  | otherwise = replicate (read (take index x) :: Int) (x !! index) ++ rest
     where index = length (takeWhile isDigit x)
-          strNum = take index x
-          n = if strNum == "" then 1 else read strNum :: Int
+          rest = decompress (drop (index+1) x)
 
 main = do [sourcefile, targetfile] <- getArgs
           filecontent <- readFile sourcefile
