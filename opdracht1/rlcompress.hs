@@ -13,11 +13,11 @@ import System.Environment
 
 check :: String -> String
 check x
-    | length x > 1 = show (length x) ++ nub x
-    | otherwise = x
+    | length x == 1 = x
+    | otherwise = show (length x) ++ [head x]
 
 compress :: String -> String
-compress input = concat (map check (group input))
+compress input = concatMap check (group input)
 
 
 
@@ -27,12 +27,12 @@ main = do [sourcefile, targetfile] <- getArgs
           let compressedContent = compress filecontent
           let lenSource = length filecontent
           let lenCompressed = length compressedContent
-          let factor = round ((fromIntegral lenCompressed) / (fromIntegral lenSource) * 100)
-          
-          
+          let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
+
+
           putStrLn $ "length of " ++ sourcefile ++ ": " ++ show lenSource ++ " characters"
           putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " characters"
           putStrLn $ "factor " ++ show lenCompressed ++ "/" ++ show lenSource ++ "*100=" ++ show factor ++ "%"
-          
+
           writeFile targetfile compressedContent
           putStrLn "done..."
