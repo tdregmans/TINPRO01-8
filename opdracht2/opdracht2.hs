@@ -16,21 +16,20 @@ data Bintree a = Empty
 
 
 -- Opdracht 2.2
--- preorder :: (Bintree a) -> [a]
--- preorder Empty = []
--- preorder (Branch x y) = (preorder x) ++ (preorder y)
--- preorder _ = 
+preorder :: (Bintree a) -> [a]
+preorder Empty = []
+preorder (Branch a b c) = [a] ++ preorder b ++ preorder c
+-- return tree in the form of a list
 
+postorder :: (Bintree a) -> [a]
+postorder Empty = []
+postorder (Branch a b c) = postorder b ++ postorder c ++ [a]
+-- return tree in the form of a list
 
--- -- preorder tree = [] -- return tree in the form of a list
-
--- postorder :: (Bintree a) -> [a]
--- postorder tree = [] -- return tree in the form of a list
-
--- inorder :: (Bintree a) -> [a]
--- inorder Branch
--- inorderTraversal (node v l r) = inorderTraversal l:v:inorderTraversal r
--- inorder tree = [] -- return tree in the form of a list
+inorder :: (Bintree a) -> [a]
+inorder Empty = []
+inorder (Branch a b c) = postorder b ++ [a] ++ postorder c
+-- return tree in the form of a list
 
 
 push :: (Ord a) => (Bintree a) -> a -> (Bintree a)
