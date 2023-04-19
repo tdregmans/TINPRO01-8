@@ -49,5 +49,7 @@ maptree function Empty = Empty
 maptree function (Branch a b c) = Branch (function a) (maptree function b) (maptree function c) 
 -- apply function on all elements of tree
 
--- filtertree :: (a -> Bool) -> (Bintree a) -> (Bintree b)
--- filtertree bool tree = tree -- return filtered nodes
+filtertree :: (a -> Bool) -> (Bintree a) -> [a]
+filtertree bool Empty = []
+filtertree bool (Branch a b c) = [a | bool a] ++ filtertree bool b ++ filtertree bool c
+-- return filtered nodes
