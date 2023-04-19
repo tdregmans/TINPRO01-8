@@ -2,17 +2,21 @@
     opdracht2.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-04-18
+    Last edited: 2023-04-19
 --}
+
 
 -- Source: https://en.wikipedia.org/wiki/Binary_search_tree
 -- Source: https://en.wikipedia.org/wiki/Tree_traversal
 
+module Main where
+
+import System.Environment
 
 -- Opdracht 2.1
 data Bintree a = Empty
                | Branch a (Bintree a) (Bintree a)
-               deriving Show
+               deriving (Show, Read)
 
 
 -- Opdracht 2.2
@@ -30,7 +34,6 @@ inorder :: (Bintree a) -> [a]
 inorder Empty = []
 inorder (Branch a b c) = postorder b ++ [a] ++ postorder c
 -- return tree in the form of a list
-
 
 push :: (Ord a) => (Bintree a) -> a -> (Bintree a)
 push Empty a = Branch a Empty Empty
@@ -52,3 +55,11 @@ filtertree :: (a -> Bool) -> (Bintree a) -> [a]
 filtertree bool Empty = []
 filtertree bool (Branch a b c) = [a | bool a] ++ filtertree bool b ++ filtertree bool c
 -- return filtered nodes
+
+
+-- Opdracht 3
+
+-- made a start, maybe make two files?
+
+main = do [sourcefile, targetfile] <- getArgs
+          putStrLn "Hey!"
