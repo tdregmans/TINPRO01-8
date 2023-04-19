@@ -16,10 +16,10 @@ data Bintree a = Empty
 
 
 -- Opdracht 2.2
-preorder :: (Bintree a) -> [a]
-preorder Empty = []
-preorder (Branch x y) = (preorder x) ++ (preorder y)
-preorder _ = 
+-- preorder :: (Bintree a) -> [a]
+-- preorder Empty = []
+-- preorder (Branch x y) = (preorder x) ++ (preorder y)
+-- preorder _ = 
 
 
 -- -- preorder tree = [] -- return tree in the form of a list
@@ -34,7 +34,11 @@ preorder _ =
 
 
 push :: (Ord a) => (Bintree a) -> a -> (Bintree a)
-push tree item = tree -- add code to push item in the tree at the right location
+push Empty a = Branch a Empty Empty
+push (Branch a b c) d
+  | d < a = Branch a (push b d) c
+  | otherwise = Branch a b (push c d)
+-- add code to push item in the tree at the right location
 
 pushlist :: (Ord a) => (Bintree a) -> [a] -> (Bintree a)
 pushlist tree items = tree -- add code to push items in the tree at the right location
