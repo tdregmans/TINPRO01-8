@@ -41,7 +41,8 @@ push (Branch a b c) d
 -- add code to push item in the tree at the right location
 
 pushlist :: (Ord a) => (Bintree a) -> [a] -> (Bintree a)
-pushlist tree items = tree -- add code to push items in the tree at the right location
+pushlist = foldl push
+-- add code to push items in the tree at the right location
 
 -- maptree :: (a -> b) -> (Bintree a) -> (Bintree b)
 -- maptree function tree = tree -- apply function on all elements of tree
