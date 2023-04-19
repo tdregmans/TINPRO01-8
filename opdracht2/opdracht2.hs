@@ -44,8 +44,10 @@ pushlist :: (Ord a) => (Bintree a) -> [a] -> (Bintree a)
 pushlist = foldl push
 -- add code to push items in the tree at the right location
 
--- maptree :: (a -> b) -> (Bintree a) -> (Bintree b)
--- maptree function tree = tree -- apply function on all elements of tree
+maptree :: (a -> b) -> (Bintree a) -> (Bintree b)
+maptree function Empty = Empty
+maptree function (Branch a b c) = Branch (function a) (maptree function b) (maptree function c) 
+-- apply function on all elements of tree
 
 -- filtertree :: (a -> Bool) -> (Bintree a) -> (Bintree b)
 -- filtertree bool tree = tree -- return filtered nodes
