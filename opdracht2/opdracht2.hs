@@ -61,5 +61,5 @@ filtertree bool (Branch a b c) = [a | bool a] ++ filtertree bool b ++ filtertree
 
 -- made a start, maybe make two files?
 
-main = do [sourcefile, targetfile] <- getArgs
+main = do sourcefile <- getArgs
           putStrLn "Hey!"
