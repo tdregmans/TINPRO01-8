@@ -18,7 +18,6 @@ data Bintree a = Empty
                | Branch a (Bintree a) (Bintree a)
                deriving (Show, Read)
 
-
 -- Opdracht 2.2
 preorder :: (Bintree a) -> [a]
 preorder Empty = []

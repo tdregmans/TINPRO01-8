@@ -27,3 +27,5 @@ main = do [sourcefile, targetfile] <- getArgs
 
           writeFile targetfile uncompressedContent
           putStrLn "done..."
+
+-- Tip van docent: Gebruik groupBy
