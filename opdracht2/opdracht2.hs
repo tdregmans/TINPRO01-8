@@ -2,7 +2,7 @@
     opdracht2.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-04-19
+    Last edited: 2023-04-20
 --}
 
 
@@ -11,6 +11,8 @@
 
 module Main where
 
+import Data.Char
+import Data.List
 import System.Environment
 
 -- Opdracht 2.1
@@ -55,10 +57,26 @@ filtertree bool Empty = []
 filtertree bool (Branch a b c) = [a | bool a] ++ filtertree bool b ++ filtertree bool c
 -- return filtered nodes
 
-
 -- Opdracht 3
 
 -- made a start, maybe make two files?
 
-main = do sourcefile <- getArgs
-          putStrLn "Hey!"
+main = do [sourcefile] <- getArgs
+          -- 1
+          filecontent <- readFile sourcefile
+          -- 2
+          let tree = pushlist Empty filecontent
+          -- 3
+          let intTree = maptree ord tree
+          -- 4
+          writeFile "tree.txt" ( unwords (map show (preorder intTree)))
+          -- 5
+          filecontent1 <- readFile "tree.txt"
+          -- let tree2 = pushlist Empty (map read (words filecontent1) :: Integer)
+          -- let tree2 = pushlist Empty (words(map read filecontent1))
+          -- 6
+
+          
+
+          putStrLn "done"
+          putStrLn (concatMap read (words filecontent1) :: String)
