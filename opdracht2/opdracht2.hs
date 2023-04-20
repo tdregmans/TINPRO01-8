@@ -72,11 +72,11 @@ main = do [sourcefile] <- getArgs
           writeFile "tree.txt" ( unwords (map show (preorder intTree)))
           -- 5
           filecontent1 <- readFile "tree.txt"
-          -- let tree2 = pushlist Empty (map read (words filecontent1) :: Integer)
+          let tree2 = pushlist Empty (map read (words filecontent1))
           -- let tree2 = pushlist Empty (words(map read filecontent1))
           -- 6
-
+          let tree3 = mapTree chr tree2
           
 
           putStrLn "done"
-          putStrLn (concatMap read (words filecontent1) :: String)
+          -- putStrLn (concatMap read (words filecontent1) :: String)
