@@ -49,7 +49,7 @@ main = do [sourcefile, targetfile, codetreefile] <- getArgs
           let lenCompressed = length compressedContent
           let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
 
-
+-- Note: Assumption: 1 byte is 8 bits.
           putStrLn $ "length of " ++ sourcefile ++ ": " ++ show lenSource ++ " characters, " ++ show (lenSource * 8) ++ " bits."
           putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " bits."
 -- Do not forget to write the file in binary, and not a string with 0's and 1's!
