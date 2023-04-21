@@ -7,4 +7,7 @@
 
 module Main where
 
-main = do putStrLn "done"
+import System.Environment
+
+main = do [sourcefile, targetfile, codetree] <- getArgs
+          putStrLn "done"
