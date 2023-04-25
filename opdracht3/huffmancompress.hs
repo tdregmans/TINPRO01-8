@@ -22,8 +22,15 @@ huffmanStep1 :: String -> [(Char, Int)]
 huffmanStep1 str = reverse (sortOn snd (map (\str -> (head str, length str) ) (group (sort str))))
 
 data Codetree a = Branchy Int (Codetree a) (Codetree a)
-                     | Char -- not completed
-                     deriving Show
+                | Branchy2 Int Char -- not completed
+                | Leeg
+                deriving (Show, Eq, Ord)
+
+testy :: [(Char, Int)] -> [Codetree a]
+testy c = [Branchy2 b a | (a, b) <- c]
+
+solvy :: [Codetree a] -> [Codetree a]
+solvy a = sort a
 
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
