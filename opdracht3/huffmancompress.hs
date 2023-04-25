@@ -21,8 +21,9 @@ example = "aaabbcbbcccddccbbcccdecccaaaaabbbb"
 huffmanStep1 :: String -> [(Char, Int)]
 huffmanStep1 str = reverse (sortOn snd (map (\str -> (head str, length str) ) (group (sort str))))
 
-data Codetree a bool = Char a bool
-                     | Codetree a -- not completed
+data Codetree a = Branchy Int (Codetree a) (Codetree a)
+                     | Char -- not completed
+                     deriving Show
 
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
