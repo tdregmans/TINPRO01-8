@@ -53,6 +53,15 @@ makeArray a b = concat [getMyBits c a | c<-b]
 
 -- h = makeArray g example
 
+getBackText :: Codetree a -> Codetree a -> [Char] -> [Char] -> [Char]
+getBackText _ _ [] result = result
+getBackText main (Branchy2 a b) xs result = getBackText main main xs (result++[b]) 
+getBackText main (Branchy a b c) (x:xs) result
+  | x == '1' = getBackText main b xs result
+  | otherwise = getBackText main c xs result
+
+-- i = getBackText f f h []
+
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
 huffmanStep2 table = Char 'a' True -- not completed
