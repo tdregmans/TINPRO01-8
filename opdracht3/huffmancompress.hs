@@ -44,6 +44,15 @@ gety (Branchy a b c) d = gety b (d++"1") ++ gety c (d++"0")
 
 -- g = sortOn fst (gety f [])
 
+getMyBits :: Char -> [([Char], Char)] -> [Char]
+getMyBits a b = fst (head (filter condition b))
+  where condition (_, t) = t == a
+
+makeArray :: [([Char], Char)] -> [Char] -> [Char]
+makeArray a b = concat [getMyBits c a | c<-b]
+
+-- h = makeArray g example
+
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
 huffmanStep2 table = Char 'a' True -- not completed
