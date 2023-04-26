@@ -18,19 +18,25 @@ example = "aaabbcbbcccddccbbcccdecccaaaaabbbb"
 -- example can be deleted when assignment is completed
 
 -- function for implementing Huffman compression step 1
-huffmanStep1 :: String -> [(Char, Int)]
-huffmanStep1 str = reverse (sortOn snd (map (\str -> (head str, length str) ) (group (sort str))))
+huffmanStep1 :: String -> [(Int, Char)]
+huffmanStep1 str = reverse (sortOn fst (map (\str -> (length str, head str) ) (group (sort str))))
 
 data Codetree a = Branchy Int (Codetree a) (Codetree a)
                 | Branchy2 Int Char -- not completed
-                | Leeg
                 deriving (Show, Eq, Ord)
 
-testy :: [(Char, Int)] -> [Codetree a]
-testy c = [Branchy2 b a | (a, b) <- c]
+testy :: [(Int, Char)] -> [Codetree a]
+testy c = sort [Branchy2 a b | (a, b) <- c]
+
+getValue :: Codetree a -> Int
+getValue (Branchy a _ _) = a
+getValue (Branchy2 a _) = a
 
 solvy :: [Codetree a] -> [Codetree a]
-solvy a = sort a
+solvy (x:xs:xss) = solvy (sort (Branchy (getValue x + getValue xs) x xs : xss))
+solvy x = x
+
+-- run: a = solvy (testy (huffmanStep1 example))
 
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
