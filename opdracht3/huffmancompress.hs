@@ -42,7 +42,7 @@ gety :: Codetree a -> [Char] -> [([Char], Char)]
 gety (Branchy2 a b) c = [(c, b)]
 gety (Branchy a b c) d = gety b (d++"1") ++ gety c (d++"0")
 
--- g = gety f []
+-- g = sortOn fst (gety f [])
 
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
