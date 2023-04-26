@@ -36,7 +36,13 @@ solvy :: [Codetree a] -> [Codetree a]
 solvy (x:xs:xss) = solvy (sort (Branchy (getValue x + getValue xs) x xs : xss))
 solvy x = x
 
--- run: a = solvy (testy (huffmanStep1 example))
+-- f = head (solvy (testy (huffmanStep1 example)))
+
+gety :: Codetree a -> [Char] -> [([Char], Char)]
+gety (Branchy2 a b) c = [(c, b)]
+gety (Branchy a b c) d = gety b (d++"1") ++ gety c (d++"0")
+
+-- g = gety f []
 
 -- function for implementing Huffman compression step 2
 huffmanStep2 :: [(Char, Int)] -> Codetree
