@@ -49,33 +49,52 @@ huffmanStep2 treeList tree = huffmanStep2 (tail (tail list) ++ [newTree]) newTre
         newTree = Branchy (val first + val secnd) first secnd
 
 -- function for implementing Huffman compression step 3
-huffmanStep3 :: Codetree a -> [(Char, Int)]
-huffmanStep3 table = [('a', 1)] -- not completed
+-- huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
+-- huffmanStep3 Empty _ = []
+-- huffmanStep3 (Branchy2 _ c) i = [(c, i)]
+-- huffmanStep3 (Branchy total table1 table2) i
+--   | total <= val table1 * 2 = huffmanStep3
+--   | otherwise = []
 
+huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
+huffmanStep3 Empty _ = []
+huffmanStep3 (Branchy2 total c) i = [(c, read (show i ++ "0") )]
+huffmanStep3 (Branchy total table1 table2) i
+  | total <= val table1 * 2 = (huffmanStep3 table1 binTable1) ++ (huffmanStep3 table2 binTable2)
+  | otherwise = (huffmanStep3 table1 binTable2) ++ (huffmanStep3 table2 binTable1)
+  where binTable1 = read (show i ++ "0")
+        binTable2 = read (show i ++ "1")
+
+-- example to test functions
+example2 :: [(Char, Int)]
+example2 = [('c', 0), ('b', 10), ('a', 110), ('d', 1110), ('e', 1111)]
+-- example2 can be deleted when assignment is completed
+
+step4 :: [(Char, Int)] -> Char -> Int
+step4 table chr = snd (table !! (head (findIndices (`elem` [chr]) (fst (unzip table)))))
 
 -- function for implementing Huffman compression step 4
 huffmanStep4 :: String -> [(Char, Int)] -> String
-huffmanStep4 str table = str -- not completed
-
+huffmanStep4 str table = concat (map (show . step4 table) str)
 
 main = do [sourcefile, targetfile, codetreefile] <- getArgs
           filecontent <- readFile sourcefile
 
           let codetree = huffmanStep2 (prepHuffmanStep2 (huffmanStep1 filecontent)) Empty
-          let compressedContent = huffmanStep4 filecontent (huffmanStep3 codetree)
+          -- let compressedContent = huffmanStep4 filecontent (huffmanStep3 codetree)
 
           let lenSource = length filecontent
-          let lenCompressed = length compressedContent
-          let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
+          -- let lenCompressed = length compressedContent
+          -- let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
 
 -- Note: Assumption: 1 byte is 8 bits.
           putStrLn $ "length of " ++ sourcefile ++ ": " ++ show lenSource ++ " characters, " ++ show (lenSource * 8) ++ " bits."
-          putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " bits."
+          -- putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " bits."
 -- Do not forget to write the file in binary, and not a string with 0's and 1's!
-          putStrLn $ "factor " ++ show lenCompressed ++ "/" ++ show lenSource ++ "*100=" ++ show factor ++ "%"
+          -- putStrLn $ "factor " ++ show lenCompressed ++ "/" ++ show lenSource ++ "*100=" ++ show factor ++ "%"
           
 
-          writeFile targetfile compressedContent
+          -- writeFile targetfile compressedContent
           putStrLn $ targetfile ++ " written to disk..."
 
           writeFile codetreefile (show codetree)
