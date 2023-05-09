@@ -32,6 +32,7 @@ val :: Codetree a -> Int
 val (Branchy a _ _) = a
 val (Branchy2 a _) = a
 val Empty = 0
+-- Can probably be replaced by derivation from Functor, or something like it
 
 -- function for implementing Huffman compression step 2
 prepHuffmanStep2 :: [(Int, Char)] -> [Codetree a]
@@ -56,18 +57,22 @@ huffmanStep2 treeList tree = huffmanStep2 (tail (tail list) ++ [newTree]) newTre
 --   | total <= val table1 * 2 = huffmanStep3
 --   | otherwise = []
 
+example2 :: Codetree a 
+example2 = Branchy 34 (Branchy 22 (Branchy 12 (Branchy 4 (Branchy2 1 'e') (Branchy2 3 'd')) (Branchy2 8 'a')) (Branchy2 10 'b')) (Branchy2 12 'c')
+
+
 huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
 huffmanStep3 Empty _ = []
-huffmanStep3 (Branchy2 total c) i = [(c, read (show i ++ "0") )]
+huffmanStep3 (Branchy2 total c) i = [(c, read (show i ++ "0") )] -- for some reason, (sometimes) is an extra 1 added at the begin. It is currently manually removed, but should be fixed in another way!
 huffmanStep3 (Branchy total table1 table2) i
-  | total <= val table1 * 2 = (huffmanStep3 table1 binTable1) ++ (huffmanStep3 table2 binTable2)
-  | otherwise = (huffmanStep3 table1 binTable2) ++ (huffmanStep3 table2 binTable1)
-  where binTable1 = read (show i ++ "0")
+  | total <= val table1 * 2 = (huffmanStep3 table2 binTable2) ++ (huffmanStep3 table1 binTable1)
+  | otherwise = (huffmanStep3 table2 binTable1) ++ (huffmanStep3 table1 binTable2)
+  where binTable1 = read (show i ++ "1")
         binTable2 = read (show i ++ "1")
 
 -- example to test functions
-example2 :: [(Char, Int)]
-example2 = [('c', 0), ('b', 10), ('a', 110), ('d', 1110), ('e', 1111)]
+example3 :: [(Char, Int)]
+example3 = [('c', 0), ('b', 10), ('a', 110), ('d', 1110), ('e', 1111)]
 -- example2 can be deleted when assignment is completed
 
 step4 :: [(Char, Int)] -> Char -> Int
@@ -81,20 +86,20 @@ main = do [sourcefile, targetfile, codetreefile] <- getArgs
           filecontent <- readFile sourcefile
 
           let codetree = huffmanStep2 (prepHuffmanStep2 (huffmanStep1 filecontent)) Empty
-          -- let compressedContent = huffmanStep4 filecontent (huffmanStep3 codetree)
+          let compressedContent = "delete comment when huffmanStep3 is completed" -- huffmanStep4 filecontent (huffmanStep3 codetree)
 
           let lenSource = length filecontent
-          -- let lenCompressed = length compressedContent
-          -- let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
+          let lenCompressed = length compressedContent
+          let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
 
 -- Note: Assumption: 1 byte is 8 bits.
           putStrLn $ "length of " ++ sourcefile ++ ": " ++ show lenSource ++ " characters, " ++ show (lenSource * 8) ++ " bits."
-          -- putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " bits."
+          putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " bits."
 -- Do not forget to write the file in binary, and not a string with 0's and 1's!
-          -- putStrLn $ "factor " ++ show lenCompressed ++ "/" ++ show lenSource ++ "*100=" ++ show factor ++ "%"
+          putStrLn $ "factor " ++ show lenCompressed ++ "/" ++ show lenSource ++ "*100=" ++ show factor ++ "%"
           
 
-          -- writeFile targetfile compressedContent
+          writeFile targetfile compressedContent
           putStrLn $ targetfile ++ " written to disk..."
 
           writeFile codetreefile (show codetree)
