@@ -61,11 +61,19 @@ example2 :: Codetree a
 example2 = Branchy 34 (Branchy 22 (Branchy 12 (Branchy 4 (Branchy2 1 'e') (Branchy2 3 'd')) (Branchy2 8 'a')) (Branchy2 10 'b')) (Branchy2 12 'c')
 
 
+-- huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
+-- huffmanStep3 Empty _ = []
+-- huffmanStep3 (Branchy2 total chr) binValue = [(chr, read (show binValue ++ "0") )] -- for some reason, (sometimes) an extra 1 is added at the begin. It is currently manually removed, but should be fixed in another way!
+-- huffmanStep3 (Branchy total table1 table2) binValue = (huffmanStep3 table2 bin2) ++ (huffmanStep3 table1 bin1)
+--   where bin1 = if total <= val table1 * 2 then read (show binValue ++ "1") else binValue
+--         bin2 = if total <= val table2 * 2 then read (show binValue ++ "1") else binValue
+
 huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
 huffmanStep3 Empty _ = []
-huffmanStep3 (Branchy2 total c) i = [(c, read (show i ++ "0") )] -- for some reason, (sometimes) is an extra 1 added at the begin. It is currently manually removed, but should be fixed in another way!
-huffmanStep3 (Branchy total table1 table2) i = (huffmanStep3 table2 bin1) ++ (huffmanStep3 table1 bin1)
-  where bin1 = read (show i ++ "1")
+huffmanStep3 (Branchy2 total chr) binValue = [(chr, read (show binValue ++ "0") )] -- for some reason, (sometimes) an extra 1 is added at the begin. It is currently manually removed, but should be fixed in another way!
+huffmanStep3 (Branchy total table1 table2) binValue = (huffmanStep3 table2 bin2) ++ (huffmanStep3 table1 bin1)
+  where bin1 = if val table1 >= val table2 then read (show binValue ++ "1") else binValue
+        bin2 = if val table1 <= val table2 then read (show binValue ++ "1") else binValue
 
 -- example to test functions
 example3 :: [(Char, Int)]
