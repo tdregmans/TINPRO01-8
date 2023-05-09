@@ -2,7 +2,7 @@
     huffmancompress.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-04-21
+    Last edited: 2023-05-09
 --}
 
 -- Do not forget to sterialize the codetree before storing -> see ../opdracht2/opdracht2.hs
@@ -11,6 +11,8 @@ module Main where
 
 import Data.List
 import System.Environment
+
+import Data.Functor
 
 -- example to test functions
 example :: String
@@ -22,53 +24,32 @@ huffmanStep1 :: String -> [(Int, Char)]
 huffmanStep1 str = reverse (sortOn fst (map (\str -> (length str, head str) ) (group (sort str))))
 
 data Codetree a = Branchy Int (Codetree a) (Codetree a)
-                | Branchy2 Int Char -- not completed
+                | Branchy2 Int Char
+                | Empty
                 deriving (Show, Eq, Ord)
 
-testy :: [(Int, Char)] -> [Codetree a]
-testy c = sort [Branchy2 a b | (a, b) <- c]
-
-getValue :: Codetree a -> Int
-getValue (Branchy a _ _) = a
-getValue (Branchy2 a _) = a
-
-solvy :: [Codetree a] -> [Codetree a]
-solvy (x:xs:xss) = solvy (sort (Branchy (getValue x + getValue xs) x xs : xss))
-solvy x = x
-
--- f = head (solvy (testy (huffmanStep1 example)))
-
-gety :: Codetree a -> [Char] -> [([Char], Char)]
-gety (Branchy2 a b) c = [(c, b)]
-gety (Branchy a b c) d = gety b (d++"1") ++ gety c (d++"0")
-
--- g = sortOn fst (gety f [])
-
-getMyBits :: Char -> [([Char], Char)] -> [Char]
-getMyBits a b = fst (head (filter condition b))
-  where condition (_, t) = t == a
-
-makeArray :: [([Char], Char)] -> [Char] -> [Char]
-makeArray a b = concat [getMyBits c a | c<-b]
-
--- h = makeArray g example
-
-getBackText :: Codetree a -> Codetree a -> [Char] -> [Char] -> [Char]
-getBackText _ _ [] result = result
-getBackText main (Branchy2 a b) xs result = getBackText main main xs (result++[b]) 
-getBackText main (Branchy a b c) (x:xs) result
-  | x == '1' = getBackText main b xs result
-  | otherwise = getBackText main c xs result
-
--- i = getBackText f f h []
+val :: Codetree a -> Int
+val (Branchy a _ _) = a
+val (Branchy2 a _) = a
+val Empty = 0
 
 -- function for implementing Huffman compression step 2
-huffmanStep2 :: [(Char, Int)] -> Codetree
-huffmanStep2 table = Char 'a' True -- not completed
+prepHuffmanStep2 :: [(Int, Char)] -> [Codetree a]
+prepHuffmanStep2 = map (\x -> Branchy2 (fst x) (snd x))
 
+huffmanStep2 :: [Codetree a] -> Codetree a -> Codetree a
+huffmanStep2 [] tree = tree
+huffmanStep2 [x] tree = tree
+huffmanStep2 treeList tree = huffmanStep2 (tail (tail list) ++ [newTree]) newTree 
+  where list = sort treeList
+
+        first = head list
+        secnd = head (tail list)
+
+        newTree = Branchy (val first + val secnd) first secnd
 
 -- function for implementing Huffman compression step 3
-huffmanStep3 :: Codetree -> [(Char, Int)]
+huffmanStep3 :: Codetree a -> [(Char, Int)]
 huffmanStep3 table = [('a', 1)] -- not completed
 
 
@@ -80,7 +61,7 @@ huffmanStep4 str table = str -- not completed
 main = do [sourcefile, targetfile, codetreefile] <- getArgs
           filecontent <- readFile sourcefile
 
-          let codetree = huffmanStep2 (huffmanStep1 filecontent)
+          let codetree = huffmanStep2 (prepHuffmanStep2 (huffmanStep1 filecontent)) Empty
           let compressedContent = huffmanStep4 filecontent (huffmanStep3 codetree)
 
           let lenSource = length filecontent
@@ -97,7 +78,7 @@ main = do [sourcefile, targetfile, codetreefile] <- getArgs
           writeFile targetfile compressedContent
           putStrLn $ targetfile ++ " written to disk..."
 
-          writeFile codetreefile codetree
-          putStrLn $ codetree ++ "written to disk..."
+          writeFile codetreefile (show codetree)
+          putStrLn $ show codetree ++ "written to disk..."
 
           putStrLn "done"
