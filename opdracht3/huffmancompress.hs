@@ -64,11 +64,8 @@ example2 = Branchy 34 (Branchy 22 (Branchy 12 (Branchy 4 (Branchy2 1 'e') (Branc
 huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
 huffmanStep3 Empty _ = []
 huffmanStep3 (Branchy2 total c) i = [(c, read (show i ++ "0") )] -- for some reason, (sometimes) is an extra 1 added at the begin. It is currently manually removed, but should be fixed in another way!
-huffmanStep3 (Branchy total table1 table2) i
-  | total <= val table1 * 2 = (huffmanStep3 table2 binTable2) ++ (huffmanStep3 table1 binTable1)
-  | otherwise = (huffmanStep3 table2 binTable1) ++ (huffmanStep3 table1 binTable2)
-  where binTable1 = read (show i ++ "1")
-        binTable2 = read (show i ++ "1")
+huffmanStep3 (Branchy total table1 table2) i = (huffmanStep3 table2 bin1) ++ (huffmanStep3 table1 bin1)
+  where bin1 = read (show i ++ "1")
 
 -- example to test functions
 example3 :: [(Char, Int)]
