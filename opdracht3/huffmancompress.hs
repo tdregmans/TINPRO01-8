@@ -2,7 +2,7 @@
     huffmancompress.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-05-09
+    Last edited: 2023-05-11
 --}
 
 -- Do not forget to sterialize the codetree before storing -> see ../opdracht2/opdracht2.hs
@@ -25,73 +25,44 @@ huffmanStep1 str = reverse (sortOn fst (map (\str -> (length str, head str) ) (g
 
 data Codetree a = Branchy Int (Codetree a) (Codetree a)
                 | Branchy2 Int Char
-                | Empty
                 deriving (Show, Eq, Ord)
 
-val :: Codetree a -> Int
-val (Branchy a _ _) = a
-val (Branchy2 a _) = a
-val Empty = 0
+value :: Codetree a -> Int
+value (Branchy a _ _) = a
+value (Branchy2 a _) = a
 -- Can probably be replaced by derivation from Functor, or something like it
 
 -- function for implementing Huffman compression step 2
 prepHuffmanStep2 :: [(Int, Char)] -> [Codetree a]
-prepHuffmanStep2 = map (\x -> Branchy2 (fst x) (snd x))
+prepHuffmanStep2 tuples = sort [Branchy2 int chr | (int, chr) <- tuples]
 
-huffmanStep2 :: [Codetree a] -> Codetree a -> Codetree a
-huffmanStep2 [] tree = tree
-huffmanStep2 [x] tree = tree
-huffmanStep2 treeList tree = huffmanStep2 (tail (tail list) ++ [newTree]) newTree 
-  where list = sort treeList
+huffmanStep2 :: [Codetree a] -> [Codetree a]
+huffmanStep2 (x:xs:xss) = huffmanStep2 (sort (Branchy (value x + value xs) x xs : xss))
+huffmanStep2 x = x
 
-        first = head list
-        secnd = head (tail list)
-
-        newTree = Branchy (val first + val secnd) first secnd
+-- step2 = head (huffmanStep2 (prepHuffmanStep2 (huffmanStep1 example)))
 
 -- function for implementing Huffman compression step 3
--- huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
--- huffmanStep3 Empty _ = []
--- huffmanStep3 (Branchy2 _ c) i = [(c, i)]
--- huffmanStep3 (Branchy total table1 table2) i
---   | total <= val table1 * 2 = huffmanStep3
---   | otherwise = []
+huffmanStep3 :: Codetree a -> [Char] -> [([Char], Char)]
+huffmanStep3 (Branchy2 int chr) bits = [(bits, chr)]
+huffmanStep3 (Branchy int tree1 tree2) bits = huffmanStep3 tree1 (bits++"1") ++ huffmanStep3 tree2 (bits++"0")
 
-example2 :: Codetree a 
-example2 = Branchy 34 (Branchy 22 (Branchy 12 (Branchy 4 (Branchy2 1 'e') (Branchy2 3 'd')) (Branchy2 8 'a')) (Branchy2 10 'b')) (Branchy2 12 'c')
+-- step3 = sortOn fst (huffmanStep3 step2 [])
 
+chrToBits :: Char -> [([Char], Char)] -> [Char]
+chrToBits chr table = fst (head (filter condition table))
+  where condition (_, tableChr) = tableChr == chr
 
--- huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
--- huffmanStep3 Empty _ = []
--- huffmanStep3 (Branchy2 total chr) binValue = [(chr, read (show binValue ++ "0") )] -- for some reason, (sometimes) an extra 1 is added at the begin. It is currently manually removed, but should be fixed in another way!
--- huffmanStep3 (Branchy total table1 table2) binValue = (huffmanStep3 table2 bin2) ++ (huffmanStep3 table1 bin1)
---   where bin1 = if total <= val table1 * 2 then read (show binValue ++ "1") else binValue
---         bin2 = if total <= val table2 * 2 then read (show binValue ++ "1") else binValue
+huffmanStep4 :: [([Char], Char)] -> [Char] -> [Char]
+huffmanStep4 table str = concat [chrToBits chr table | chr <- str]
 
-huffmanStep3 :: Codetree a -> Int -> [(Char, Int)]
-huffmanStep3 Empty _ = []
-huffmanStep3 (Branchy2 total chr) binValue = [(chr, read (show binValue ++ "0") )] -- for some reason, (sometimes) an extra 1 is added at the begin. It is currently manually removed, but should be fixed in another way!
-huffmanStep3 (Branchy total table1 table2) binValue = (huffmanStep3 table2 bin2) ++ (huffmanStep3 table1 bin1)
-  where bin1 = if val table1 >= val table2 then read (show binValue ++ "1") else binValue
-        bin2 = if val table1 <= val table2 then read (show binValue ++ "1") else binValue
-
--- example to test functions
-example3 :: [(Char, Int)]
-example3 = [('c', 0), ('b', 10), ('a', 110), ('d', 1110), ('e', 1111)]
--- example2 can be deleted when assignment is completed
-
-step4 :: [(Char, Int)] -> Char -> Int
-step4 table chr = snd (table !! (head (findIndices (`elem` [chr]) (fst (unzip table)))))
-
--- function for implementing Huffman compression step 4
-huffmanStep4 :: String -> [(Char, Int)] -> String
-huffmanStep4 str table = concat (map (show . step4 table) str)
+-- step4 = huffmanStep4 step3 example
 
 main = do [sourcefile, targetfile, codetreefile] <- getArgs
           filecontent <- readFile sourcefile
 
-          let codetree = huffmanStep2 (prepHuffmanStep2 (huffmanStep1 filecontent)) Empty
-          let compressedContent = "delete comment when huffmanStep3 is completed" -- huffmanStep4 filecontent (huffmanStep3 codetree)
+          let codetree = head (huffmanStep2 (prepHuffmanStep2 (huffmanStep1 filecontent)))
+          let compressedContent = huffmanStep4 (sortOn fst (huffmanStep3 codetree [])) filecontent
 
           let lenSource = length filecontent
           let lenCompressed = length compressedContent
