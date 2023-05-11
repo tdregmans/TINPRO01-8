@@ -5,7 +5,7 @@
     Last edited: 2023-05-11
 --}
 
--- Do not forget to sterialize the codetree before storing -> see ../opdracht2/opdracht2.hs
+-- Do not forget to serialize the codetree before storing -> see ../opdracht2/opdracht2.hs
 
 module Main where
 
