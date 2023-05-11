@@ -80,5 +80,3 @@ main = do [sourcefile, targetfile, codetreefile] <- getArgs
           putStrLn $ show codetree ++ "written to disk..."
 
           putStrLn "done"
-
--- RTFM: Do not forget to look at 'Tips, werkwijze en aanwijzingen' in Manual.
