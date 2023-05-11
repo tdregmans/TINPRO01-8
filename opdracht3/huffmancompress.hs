@@ -25,7 +25,7 @@ huffmanStep1 str = reverse (sortOn fst (map (\str -> (length str, head str) ) (g
 
 data Codetree a = Branchy Int (Codetree a) (Codetree a)
                 | Branchy2 Int Char
-                deriving (Show, Eq, Ord)
+                deriving (Show, Eq, Ord, Read)
 
 value :: Codetree a -> Int
 value (Branchy a _ _) = a
@@ -64,16 +64,14 @@ main = do [sourcefile, targetfile, codetreefile] <- getArgs
           let codetree = head (huffmanStep2 (prepHuffmanStep2 (huffmanStep1 filecontent)))
           let compressedContent = huffmanStep4 (sortOn fst (huffmanStep3 codetree [])) filecontent
 
-          let lenSource = length filecontent
+          let lenSource = length filecontent * 8
           let lenCompressed = length compressedContent
           let factor = round (fromIntegral lenCompressed / fromIntegral lenSource * 100)
 
--- Note: Assumption: 1 byte is 8 bits.
-          putStrLn $ "length of " ++ sourcefile ++ ": " ++ show lenSource ++ " characters, " ++ show (lenSource * 8) ++ " bits."
+          putStrLn $ "length of " ++ sourcefile ++ ": " ++ show (lenSource `div` 8) ++ " characters, " ++ show lenSource ++ " bits."
           putStrLn $ "length of compressed file " ++ targetfile ++ ": " ++ show lenCompressed ++ " bits."
--- Do not forget to write the file in binary, and not a string with 0's and 1's!
+
           putStrLn $ "factor " ++ show lenCompressed ++ "/" ++ show lenSource ++ "*100=" ++ show factor ++ "%"
-          
 
           writeFile targetfile compressedContent
           putStrLn $ targetfile ++ " written to disk..."

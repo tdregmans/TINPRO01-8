@@ -2,7 +2,7 @@
     opdracht2.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-04-20
+    Last edited: 2023-05-11
 --}
 
 -- Source: https://en.wikipedia.org/wiki/Binary_search_tree
@@ -61,12 +61,12 @@ main = do [sourcefile] <- getArgs
           -- 3
           let intTree = maptree ord tree
           -- 4
-          writeFile "tree.txt" ( unwords (map show (preorder intTree)))
+          writeFile "tree.txt" (show intTree)
           -- 5
-          filecontent1 <- readFile "tree.txt"
-          let tree2 = pushlist Empty (map (read :: String -> Int) (words filecontent1))
+          strTree2 <- readFile "tree.txt"
+          let tree2b =  (read strTree2 :: Bintree Int)
           -- 6
-          let tree3 = maptree chr tree2
+          let tree3 = maptree chr tree2b
           -- 7
           let string = inorder tree3
           -- 8
@@ -75,5 +75,5 @@ main = do [sourcefile] <- getArgs
           let filteredTree = filtertree isDigit tree3
           -- 10
           putStrLn filteredTree
-
+  
           putStrLn "done"
