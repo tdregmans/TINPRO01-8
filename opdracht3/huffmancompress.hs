@@ -2,10 +2,8 @@
     huffmancompress.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-05-11
+    Last edited: 2023-05-23
 --}
-
--- Do not forget to serialize the codetree before storing -> see ../opdracht2/opdracht2.hs
 
 module Main where
 
@@ -13,6 +11,8 @@ import Data.List
 import System.Environment
 
 import Data.Functor
+
+import Control.Applicative
 
 -- example to test functions
 example :: String
@@ -29,8 +29,7 @@ data Codetree a = Branchy Int (Codetree a) (Codetree a)
 
 value :: Codetree a -> Int
 value (Branchy a _ _) = a
-value (Branchy2 a _) = a
--- Can probably be replaced by derivation from Functor, or something like it
+value (Branchy2 a _) = a 
 
 -- function for implementing Huffman compression step 2
 prepHuffmanStep2 :: [(Int, Char)] -> [Codetree a]

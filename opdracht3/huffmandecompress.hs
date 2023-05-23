@@ -2,15 +2,12 @@
     huffmandecompress.hs
     TINPRO01-8 (Functional programming 2)
     Sep van der Biezen, Thijs Dregmans 
-    Last edited: 2023-05-11
+    Last edited: 2023-05-23
 --}
-
--- 1110101101100101111
 
 module Main where
 
 import System.Environment
-
 
 data Codetree a = Branchy Int (Codetree a) (Codetree a)
                 | Branchy2 Int Char
