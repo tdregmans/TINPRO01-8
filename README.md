@@ -8,3 +8,8 @@ In functioneel programmeren 1 werd een inleiding gegeven in het concept function
 ## Opdrachten
 
 De cursus bestaat uit 3 opdrachten.
+
+## Cijfers
+opdracht 1: 8.0
+opdracht 2: 8.0
+opdracht 3: 9.0
