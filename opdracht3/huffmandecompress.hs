@@ -5,6 +5,8 @@
     Last edited: 2023-05-11
 --}
 
+-- 1110101101100101111
+
 module Main where
 
 import System.Environment
@@ -15,16 +17,17 @@ data Codetree a = Branchy Int (Codetree a) (Codetree a)
                 deriving (Show, Eq, Ord, Read)
 
 split :: Codetree a -> [Char] -> (Char, [Char])
-split (Branchy2 a b) c = (b, c)
-split (Branchy a b c) d
-  | head d == '1' = split b rest
-  | otherwise = split c rest
-  where rest = drop 1 d
+split (Branchy2 _ chr) bits = (chr, bits)
+split (Branchy _ tree1 tree2) bits
+  | head bits == '1' = split tree1 rest
+  | otherwise = split tree2 rest
+  where rest = drop 1 bits
 
 decompress :: Codetree a -> [Char] -> [Char]
 decompress _ [] = []
-decompress a b = fst c : decompress a (snd c)
-  where c = split a b
+decompress tree bitString = fst tuple : decompress tree (snd tuple)
+  where tuple = split tree bitString
+  -- tuple is the (first char, [rest of the bitsco]) 
 
 
 main = do [sourcefile, targetfile, codetreefile] <- getArgs
